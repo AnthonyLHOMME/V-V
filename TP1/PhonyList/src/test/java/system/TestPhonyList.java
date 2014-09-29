@@ -80,4 +80,57 @@ public class TestPhonyList {
         assertTrue(list.contains("1"));
     }
 
+    /**
+     * Tests the "get" method with an empty list and an out of bounds index
+     *
+     * @see PhonyList#get(int)
+     * @type Functional
+     * @input list = [], i = 0
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     */
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testGet_emptyList () {
+        PhonyList<Integer> list = new PhonyList<Integer>();
+        list.get(0);
+    }
+
+    /**
+     * Tests the "get" method with a filled list and an index which is not out of bounds
+     *
+     * @see PhonyList#get(int)
+     * @type Functional
+     * @input list = ["elem 1", "elem 2", "elem 3"], i1 = 0, i2 = 1, i3 = 2
+     * @oracle Must returns "elem 1" then "elem 2" then "elem 3"
+     * @passed Yes
+     */
+    @Test
+    public void testGet_filledList () {
+        PhonyList<String> list = new PhonyList<String>();
+        list.add("elem 1");
+        list.add("elem 2");
+        list.add("elem 3");
+        assertEquals(list.get(0), "elem 1");
+        assertEquals(list.get(1), "elem 2");
+        assertEquals(list.get(2), "elem 3");
+    }
+
+    /**
+     * Tests the "get" method with a filled list and an out of bounds index
+     *
+     * @see PhonyList#get(int)
+     * @type Functional
+     * @input list = ["elem 1", "elem 2", "elem 3"], i = 3
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     */
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testGet_filledList_outOfB () {
+        PhonyList<String> list = new PhonyList<String>();
+        list.add("elem 1");
+        list.add("elem 2");
+        list.add("elem 3");
+        list.get(3);
+    }
+
 }
