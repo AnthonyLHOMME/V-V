@@ -24,6 +24,15 @@ public class TestPhonyList {
         assertEquals(list.size(), 1);
     }
 
+    /**
+     * Tests the "isEmpty" method with an empty list and a list with one element
+     *
+     * @see PhonyList#isEmpty()
+     * @type Functional
+     * @input list = []
+     * @oracle Must returns true then false
+     * @passed Yes
+     */
     @Test
     public void testIsEmpty () {
         PhonyList<Integer> list = new PhonyList<>();
