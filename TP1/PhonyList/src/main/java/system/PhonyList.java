@@ -1,12 +1,6 @@
 package system;
 
-import java.util.AbstractList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Resizable-array implementation of the <tt>List</tt> interface. Implements all
@@ -15,30 +9,30 @@ import java.util.Vector;
  * methods to manipulate the size of the array that is used internally to store
  * the list. (This class is roughly equivalent to <tt>Vector</tt>, except that
  * it is unsynchronized.)
- * 
- * <p>
+ * <p/>
+ * <p/>
  * The <tt>size</tt>, <tt>isEmpty</tt>, <tt>get</tt>, <tt>set</tt>,
  * <tt>iterator</tt>, and <tt>listIterator</tt> operations run in constant time.
  * The <tt>add</tt> operation runs in <i>amortized constant time</i>, that is,
  * adding n elements requires O(n) time. All of the other operations run in
  * linear time (roughly speaking). The constant factor is low compared to that
  * for the <tt>LinkedList</tt> implementation.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * Each <tt>PhonyArrayList</tt> instance has a <i>capacity</i>. The capacity is
  * the size of the array used to store the elements in the list. It is always at
  * least as large as the list size. As elements are added to an PhonyArrayList,
  * its capacity grows automatically. The details of the growth policy are not
  * specified beyond the fact that adding an element has constant amortized time
  * cost.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * An application can increase the capacity of an <tt>PhonyArrayList</tt>
  * instance before adding a large number of elements using the
  * <tt>ensureCapacity</tt> operation. This may reduce the amount of incremental
  * reallocation.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * <strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an <tt>PhonyArrayList</tt> instance concurrently, and
  * at least one of the threads modifies the list structurally, it <i>must</i> be
@@ -47,18 +41,16 @@ import java.util.Vector;
  * array; merely setting the value of an element is not a structural
  * modification.) This is typically accomplished by synchronizing on some object
  * that naturally encapsulates the list.
- * 
+ * <p/>
  * If no such object exists, the list should be "wrapped" using the
  * {@link Collections#synchronizedList Collections.synchronizedList} method.
  * This is best done at creation time, to prevent accidental unsynchronized
  * access to the list:
- * 
+ * <p/>
  * <pre>
  *   List list = Collections.synchronizedList(new PhonyArrayList(...));
  * </pre>
- * 
- * 
- * 
+ *
  * @author Josh Bloch
  * @author Neal Gafter
  * @see Collection
@@ -70,394 +62,374 @@ import java.util.Vector;
 
 public class PhonyList<E> extends AbstractList<E> implements List<E> {
 
-	/**
-	 * Default initial capacity.
-	 */
-	private static final int DEFAULT_CAPACITY = 10;
+    /**
+     * Default initial capacity.
+     */
+    private static final int DEFAULT_CAPACITY = 10;
 
-	/**
-	 * Shared empty array instance used for empty instances.
-	 */
-	private static final Object[] EMPTY_ELEMENTDATA = {};
+    /**
+     * Shared empty array instance used for empty instances.
+     */
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+    /**
+     * The maximum size of array to allocate. Some VMs reserve some header words
+     * in an array. Attempts to allocate larger arrays may result in
+     * OutOfMemoryError: Requested array size exceeds VM limit
+     */
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    /**
+     * The array buffer into which the elements of the PhonyArrayList are
+     * stored. The capacity of the PhonyArrayList is the length of this array
+     * buffer. Any empty PhonyArrayList with elementData == EMPTY_ELEMENTDATA
+     * will be expanded to DEFAULT_CAPACITY when the first element is added.
+     */
+    private transient Object[] elementData;
+    /**
+     * The size of the PhonyArrayList (the number of elements it contains).
+     *
+     * @serial
+     */
+    private int size;
 
-	/**
-	 * The array buffer into which the elements of the PhonyArrayList are
-	 * stored. The capacity of the PhonyArrayList is the length of this array
-	 * buffer. Any empty PhonyArrayList with elementData == EMPTY_ELEMENTDATA
-	 * will be expanded to DEFAULT_CAPACITY when the first element is added.
-	 */
-	private transient Object[] elementData;
+    /**
+     * Constructs an empty list with an initial capacity of ten.
+     */
+    public PhonyList() {
+        super();
+        this.elementData = EMPTY_ELEMENTDATA;
+    }
 
-	/**
-	 * The size of the PhonyArrayList (the number of elements it contains).
-	 * 
-	 * @serial
-	 */
-	private int size;
+    private static int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) // overflow
+            throw new OutOfMemoryError();
+        return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE
+                : MAX_ARRAY_SIZE;
+    }
 
-	/**
-	 * Constructs an empty list with an initial capacity of ten.
-	 */
-	public PhonyList() {
-		super();
-		this.elementData = EMPTY_ELEMENTDATA;
-	}
+    private void ensureCapacityInternal(int minCapacity) {
+        if (elementData == EMPTY_ELEMENTDATA) {
+            minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+        }
 
-	private void ensureCapacityInternal(int minCapacity) {
-		if (elementData == EMPTY_ELEMENTDATA) {
-			minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-		}
+        ensureExplicitCapacity(minCapacity);
+    }
 
-		ensureExplicitCapacity(minCapacity);
-	}
+    private void ensureExplicitCapacity(int minCapacity) {
+        modCount++;
 
-	private void ensureExplicitCapacity(int minCapacity) {
-		modCount++;
+        // overflow-conscious code
+        if (minCapacity - elementData.length > 0)
+            grow(minCapacity);
+    }
 
-		// overflow-conscious code
-		if (minCapacity - elementData.length > 0)
-			grow(minCapacity);
-	}
+    /**
+     * Increases the capacity to ensure that it can hold at least the number of
+     * elements specified by the minimum capacity argument.
+     *
+     * @param minCapacity the desired minimum capacity
+     */
+    private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
 
-	/**
-	 * The maximum size of array to allocate. Some VMs reserve some header words
-	 * in an array. Attempts to allocate larger arrays may result in
-	 * OutOfMemoryError: Requested array size exceeds VM limit
-	 */
-	private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    /**
+     * Returns the number of elements in this list.
+     *
+     * @return the number of elements in this list
+     */
+    public int size() {
+        return size;
+    }
 
-	/**
-	 * Increases the capacity to ensure that it can hold at least the number of
-	 * elements specified by the minimum capacity argument.
-	 * 
-	 * @param minCapacity
-	 *            the desired minimum capacity
-	 */
-	private void grow(int minCapacity) {
-		// overflow-conscious code
-		int oldCapacity = elementData.length;
-		int newCapacity = oldCapacity + (oldCapacity >> 1);
-		if (newCapacity - minCapacity < 0)
-			newCapacity = minCapacity;
-		if (newCapacity - MAX_ARRAY_SIZE > 0)
-			newCapacity = hugeCapacity(minCapacity);
-		// minCapacity is usually close to size, so this is a win:
-		elementData = Arrays.copyOf(elementData, newCapacity);
-	}
+    /**
+     * Returns <tt>true</tt> if this list contains no elements.
+     *
+     * @return <tt>true</tt> if this list contains no elements
+     */
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-	private static int hugeCapacity(int minCapacity) {
-		if (minCapacity < 0) // overflow
-			throw new OutOfMemoryError();
-		return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE
-				: MAX_ARRAY_SIZE;
-	}
+    /**
+     * Returns <tt>true</tt> if this list contains the specified element. More
+     * formally, returns <tt>true</tt> if and only if this list contains at
+     * least one element <tt>e</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+     *
+     * @param o element whose presence in this list is to be tested
+     * @return <tt>true</tt> if this list contains the specified element
+     */
+    public boolean contains(Object o) {
+        return indexOf(o) >= 0;
+    }
 
-	/**
-	 * Returns the number of elements in this list.
-	 * 
-	 * @return the number of elements in this list
-	 */
-	public int size() {
-		return size;
-	}
+    /**
+     * Returns the index of the first occurrence of the specified element in
+     * this list, or -1 if this list does not contain the element. More
+     * formally, returns the lowest index <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+     * or -1 if there is no such index.
+     */
+    public int indexOf(Object o) {
+        if (o == null) {
+            for (int i = 0; i < size; i++)
+                if (elementData[i] == null)
+                    return i;
+        } else {
+            for (int i = 0; i < size; i++)
+                if (o.equals(elementData[i]))
+                    return i;
+        }
+        return -1;
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this list contains no elements.
-	 * 
-	 * @return <tt>true</tt> if this list contains no elements
-	 */
-	public boolean isEmpty() {
-		return size == 0;
-	}
+    // Positional Access Operations
 
-	/**
-	 * Returns <tt>true</tt> if this list contains the specified element. More
-	 * formally, returns <tt>true</tt> if and only if this list contains at
-	 * least one element <tt>e</tt> such that
-	 * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
-	 * 
-	 * @param o
-	 *            element whose presence in this list is to be tested
-	 * @return <tt>true</tt> if this list contains the specified element
-	 */
-	public boolean contains(Object o) {
-		return indexOf(o) >= 0;
-	}
+    @SuppressWarnings("unchecked")
+    E elementData(int index) {
+        return (E) elementData[index];
+    }
 
-	/**
-	 * Returns the index of the first occurrence of the specified element in
-	 * this list, or -1 if this list does not contain the element. More
-	 * formally, returns the lowest index <tt>i</tt> such that
-	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-	 * or -1 if there is no such index.
-	 */
-	public int indexOf(Object o) {
-		if (o == null) {
-			for (int i = 0; i < size; i++)
-				if (elementData[i] == null)
-					return i;
-		} else {
-			for (int i = 0; i < size; i++)
-				if (o.equals(elementData[i]))
-					return i;
-		}
-		return -1;
-	}
+    /**
+     * Returns the element at the specified position in this list.
+     *
+     * @param index index of the element to return
+     * @return the element at the specified position in this list
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     */
+    public E get(int index) {
+        rangeCheck(index);
 
-	// Positional Access Operations
+        return elementData(index);
+    }
 
-	@SuppressWarnings("unchecked")
-	E elementData(int index) {
-		return (E) elementData[index];
-	}
+    /**
+     * Replaces the element at the specified position in this list with the
+     * specified element.
+     *
+     * @param index   index of the element to replace
+     * @param element element to be stored at the specified position
+     * @return the element previously at the specified position
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     */
+    public E set(int index, E element) {
+        rangeCheck(index);
 
-	/**
-	 * Returns the element at the specified position in this list.
-	 * 
-	 * @param index
-	 *            index of the element to return
-	 * @return the element at the specified position in this list
-	 * @throws IndexOutOfBoundsException
-	 *             {@inheritDoc}
-	 */
-	public E get(int index) {
-		rangeCheck(index);
+        E oldValue = elementData(index);
+        elementData[index++] = element;
+        return oldValue;
+    }
 
-		return elementData(index);
-	}
+    /**
+     * Appends the specified element to the end of this list.
+     *
+     * @param e element to be appended to this list
+     * @return <tt>true</tt> (as specified by {@link Collection#add})
+     */
+    public boolean add(E e) {
+        ensureCapacityInternal(size + 1); // Increments modCount!!
+        elementData[size++] = e;
+        return true;
+    }
 
-	/**
-	 * Replaces the element at the specified position in this list with the
-	 * specified element.
-	 * 
-	 * @param index
-	 *            index of the element to replace
-	 * @param element
-	 *            element to be stored at the specified position
-	 * @return the element previously at the specified position
-	 * @throws IndexOutOfBoundsException
-	 *             {@inheritDoc}
-	 */
-	public E set(int index, E element) {
-		rangeCheck(index);
+    /**
+     * Removes the first occurrence of the specified element from this list, if
+     * it is present. If the list does not contain the element, it is unchanged.
+     * More formally, removes the element with the lowest index <tt>i</tt> such
+     * that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
+     * (if such an element exists). Returns <tt>true</tt> if this list contained
+     * the specified element (or equivalently, if this list changed as a result
+     * of the call).
+     *
+     * @param o element to be removed from this list, if present
+     * @return <tt>true</tt> if this list contained the specified element
+     */
+    public boolean remove(Object o) {
+        if (o == null) {
+            for (int index = 0; index < size; index++)
+                if (elementData[index] != null) {
+                    fastRemove(index);
+                    return true;
+                }
+        } else {
+            for (int index = 0; index < size; index++)
+                if (o.equals(elementData[index])) {
+                    fastRemove(index);
+                    return true;
+                }
+        }
+        return false;
+    }
 
-		E oldValue = elementData(index);
-		elementData[++index] = element;
-		return oldValue;
-	}
+    /*
+     * Private remove method that skips bounds checking and does not return the
+     * value removed.
+     */
+    private void fastRemove(int index) {
+        modCount++;
+        int numMoved = size - index - 1;
+        if (numMoved > 0)
+            System.arraycopy(elementData, index + 1, elementData, index,
+                    numMoved);
+        elementData[--size] = null; // clear to let GC do its work
+    }
 
-	/**
-	 * Appends the specified element to the end of this list.
-	 * 
-	 * @param e
-	 *            element to be appended to this list
-	 * @return <tt>true</tt> (as specified by {@link Collection#add})
-	 */
-	public boolean add(E e) {
-		ensureCapacityInternal(size + 1); // Increments modCount!!
-		elementData[size++] = e;
-		return true;
-	}
+    /**
+     * Removes all of the elements from this list. The list will be empty after
+     * this call returns.
+     */
+    public void clear() {
+        modCount++;
+        // clear to let GC do its work
+        for (int i = 0; i < size; i++)
+            elementData[i] = null;
 
-	/**
-	 * Removes the first occurrence of the specified element from this list, if
-	 * it is present. If the list does not contain the element, it is unchanged.
-	 * More formally, removes the element with the lowest index <tt>i</tt> such
-	 * that
-	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
-	 * (if such an element exists). Returns <tt>true</tt> if this list contained
-	 * the specified element (or equivalently, if this list changed as a result
-	 * of the call).
-	 * 
-	 * @param o
-	 *            element to be removed from this list, if present
-	 * @return <tt>true</tt> if this list contained the specified element
-	 */
-	public boolean remove(Object o) {
-		if (o == null) {
-			for (int index = 0; index < size; index++)
-				if (elementData[index] != null) {
-					fastRemove(index);
-					return true;
-				}
-		} else {
-			for (int index = 0; index < size; index++)
-				if (o.equals(elementData[index])) {
-					fastRemove(index);
-					return true;
-				}
-		}
-		return false;
-	}
+        size = 0;
+    }
 
-	/*
-	 * Private remove method that skips bounds checking and does not return the
-	 * value removed.
-	 */
-	private void fastRemove(int index) {
-		modCount++;
-		int numMoved = size - index - 1;
-		if (numMoved > 0)
-			System.arraycopy(elementData, index + 1, elementData, index,
-					numMoved);
-		elementData[--size] = null; // clear to let GC do its work
-	}
+    /**
+     * Inserts all of the elements in the specified collection into this list,
+     * starting at the specified position. Shifts the element currently at that
+     * position (if any) and any subsequent elements to the right (increases
+     * their indices). The new elements will appear in the list in the order
+     * that they are returned by the specified collection's iterator.
+     *
+     * @param index index at which to insert the first element from the specified
+     *              collection
+     * @param c     collection containing elements to be added to this list
+     * @return <tt>true</tt> if this list changed as a result of the call
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @throws NullPointerException      if the specified collection is null
+     */
+    public boolean addAll(int index, Collection<? extends E> c) {
+        rangeCheckForAdd(index);
 
-	/**
-	 * Removes all of the elements from this list. The list will be empty after
-	 * this call returns.
-	 */
-	public void clear() {
-		modCount++;
-		// clear to let GC do its work
-		for (int i = 0; i < size; i++)
-			elementData[i] = null;
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityInternal(size + numNew); // Increments modCount
 
-		size = 0;
-	}
+        int numMoved = size - index;
+        if (numMoved > 0)
+            System.arraycopy(elementData, index, elementData, index + numNew,
+                    numMoved);
+        else if (numMoved > size) {
+            System.arraycopy(elementData, index, elementData, index + numNew,
+                    numMoved);
+        }
 
-	/**
-	 * Inserts all of the elements in the specified collection into this list,
-	 * starting at the specified position. Shifts the element currently at that
-	 * position (if any) and any subsequent elements to the right (increases
-	 * their indices). The new elements will appear in the list in the order
-	 * that they are returned by the specified collection's iterator.
-	 * 
-	 * @param index
-	 *            index at which to insert the first element from the specified
-	 *            collection
-	 * @param c
-	 *            collection containing elements to be added to this list
-	 * @return <tt>true</tt> if this list changed as a result of the call
-	 * @throws IndexOutOfBoundsException
-	 *             {@inheritDoc}
-	 * @throws NullPointerException
-	 *             if the specified collection is null
-	 */
-	public boolean addAll(int index, Collection<? extends E> c) {
-		rangeCheckForAdd(index);
+        System.arraycopy(a, 0, elementData, index, numNew);
+        size += numNew;
+        return numNew != 0;
+    }
 
-		Object[] a = c.toArray();
-		int numNew = a.length;
-		ensureCapacityInternal(size + numNew); // Increments modCount
+    /**
+     * Removes from this list all of the elements whose index is between
+     * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive. Shifts any
+     * succeeding elements to the left (reduces their index). This call shortens
+     * the list by {@code (toIndex - fromIndex)} elements. (If
+     * {@code toIndex==fromIndex}, this operation has no effect.)
+     *
+     * @throws IndexOutOfBoundsException if {@code fromIndex} or {@code toIndex} is out of range (
+     *                                   {@code fromIndex < 0 ||
+     *                                   fromIndex >= size() ||
+     *                                   toIndex > size() ||
+     *                                   toIndex < fromIndex})
+     */
+    protected void removeRange(int fromIndex, int toIndex) {
+        modCount++;
+        int numMoved = size - toIndex;
 
-		int numMoved = size - index;
-		if (numMoved > 0)
-			System.arraycopy(elementData, index, elementData, index + numNew,
-					numMoved);
-		else if (numMoved > size) {
-			System.arraycopy(elementData, index, elementData, index + numNew,
-					numMoved);
-		}
+        System.arraycopy(elementData, toIndex, elementData, fromIndex, numMoved);
 
-		System.arraycopy(a, 0, elementData, index, numNew);
-		size += numNew;
-		return numNew != 0;
-	}
+        // clear to let GC do its work
+        int newSize = size - (toIndex - fromIndex);
+        for (int i = newSize; i < size; i++) {
+            elementData[i] = null;
+        }
+        size = newSize;
+    }
 
-	/**
-	 * Removes from this list all of the elements whose index is between
-	 * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive. Shifts any
-	 * succeeding elements to the left (reduces their index). This call shortens
-	 * the list by {@code (toIndex - fromIndex)} elements. (If
-	 * {@code toIndex==fromIndex}, this operation has no effect.)
-	 * 
-	 * @throws IndexOutOfBoundsException
-	 *             if {@code fromIndex} or {@code toIndex} is out of range (
-	 *             {@code fromIndex < 0 ||
-	 *          fromIndex >= size() ||
-	 *          toIndex > size() ||
-	 *          toIndex < fromIndex})
-	 */
-	protected void removeRange(int fromIndex, int toIndex) {
-		modCount++;
-		int numMoved = size - toIndex;
+    /**
+     * Checks if the given index is in range. If not, throws an appropriate
+     * runtime exception. This method does *not* check if the index is negative:
+     * It is always used immediately prior to an array access, which throws an
+     * ArrayIndexOutOfBoundsException if index is negative.
+     */
+    private void rangeCheck(int index) {
+        if (index >= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    }
 
-		System.arraycopy(elementData, toIndex, elementData, fromIndex, numMoved);
+    /**
+     * A version of rangeCheck used by add and addAll.
+     */
+    private void rangeCheckForAdd(int index) {
+        if (index > size || index < 0)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    }
 
-		// clear to let GC do its work
-		int newSize = size - (toIndex - fromIndex);
-		for (int i = newSize; i < size; i++) {
-			elementData[i] = null;
-		}
-		size = newSize;
-	}
+    /**
+     * Constructs an IndexOutOfBoundsException detail message. Of the many
+     * possible refactorings of the error handling code, this "outlining"
+     * performs best with both server and client VMs.
+     */
+    private String outOfBoundsMsg(int index) {
+        return "Index: " + index + ", Size: " + size;
+    }
 
-	/**
-	 * Checks if the given index is in range. If not, throws an appropriate
-	 * runtime exception. This method does *not* check if the index is negative:
-	 * It is always used immediately prior to an array access, which throws an
-	 * ArrayIndexOutOfBoundsException if index is negative.
-	 */
-	private void rangeCheck(int index) {
-		if (index >= size)
-			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-	}
+    /**
+     * Removes from this list all of its elements that are contained in the
+     * specified collection.
+     *
+     * @param c collection containing elements to be removed from this list
+     * @return {@code true} if this list changed as a result of the call
+     * @throws ClassCastException   if the class of an element of this list is incompatible with
+     *                              the specified collection (<a
+     *                              href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if this list contains a null element and the specified
+     *                              collection does not permit null elements (<a
+     *                              href="Collection.html#optional-restrictions">optional</a>),
+     *                              or if the specified collection is null
+     * @see Collection#contains(Object)
+     */
+    public boolean removeAll(Collection<?> c) {
+        return batchRemove(c, false);
+    }
 
-	/**
-	 * A version of rangeCheck used by add and addAll.
-	 */
-	private void rangeCheckForAdd(int index) {
-		if (index > size || index < 0)
-			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
-	}
-
-	/**
-	 * Constructs an IndexOutOfBoundsException detail message. Of the many
-	 * possible refactorings of the error handling code, this "outlining"
-	 * performs best with both server and client VMs.
-	 */
-	private String outOfBoundsMsg(int index) {
-		return "Index: " + index + ", Size: " + size;
-	}
-
-	/**
-	 * Removes from this list all of its elements that are contained in the
-	 * specified collection.
-	 * 
-	 * @param c
-	 *            collection containing elements to be removed from this list
-	 * @return {@code true} if this list changed as a result of the call
-	 * @throws ClassCastException
-	 *             if the class of an element of this list is incompatible with
-	 *             the specified collection (<a
-	 *             href="Collection.html#optional-restrictions">optional</a>)
-	 * @throws NullPointerException
-	 *             if this list contains a null element and the specified
-	 *             collection does not permit null elements (<a
-	 *             href="Collection.html#optional-restrictions">optional</a>),
-	 *             or if the specified collection is null
-	 * @see Collection#contains(Object)
-	 */
-	public boolean removeAll(Collection<?> c) {
-		return batchRemove(c, false);
-	}
-
-	private boolean batchRemove(Collection<?> c, boolean complement) {
-		final Object[] elementData = this.elementData;
-		int r = 0, w = 0;
-		boolean modified = false;
-		try {
-			for (; r < size - 1; r++)
-				if (c.contains(elementData[r]) == complement)
-					elementData[w++] = elementData[r];
-		} finally {
-			// Preserve behavioral compatibility with AbstractCollection,
-			// even if c.contains() throws.
-			if (r != size) {
-				System.arraycopy(elementData, r, elementData, w, size - r);
-				w += size - r;
-			}
-			if (w != size) {
-				// clear to let GC do its work
-				for (int i = w; i < size; i++)
-					elementData[i] = null;
-				modCount += size - w;
-				size = w;
-				modified = true;
-			}
-		}
-		return modified;
-	}
+    private boolean batchRemove(Collection<?> c, boolean complement) {
+        final Object[] elementData = this.elementData;
+        int r = 0, w = 0;
+        boolean modified = false;
+        try {
+            for (; r < size - 1; r++)
+                if (c.contains(elementData[r]) == complement)
+                    elementData[w++] = elementData[r];
+        } finally {
+            // Preserve behavioral compatibility with AbstractCollection,
+            // even if c.contains() throws.
+            if (r != size) {
+                System.arraycopy(elementData, r, elementData, w, size - r);
+                w += size - r;
+            }
+            if (w != size) {
+                // clear to let GC do its work
+                for (int i = w; i < size; i++)
+                    elementData[i] = null;
+                modCount += size - w;
+                size = w;
+                modified = true;
+            }
+        }
+        return modified;
+    }
 
 }

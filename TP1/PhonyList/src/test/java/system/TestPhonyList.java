@@ -1,22 +1,33 @@
 package system;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class TestPhonyList {
 
+    /*
+     * Helper method to create lists [0,1,2,...,max-1].
+     */
+    private PhonyList<Integer> list(int max) {
+        PhonyList<Integer> list = new PhonyList<>();
+        for (int i = 0; i < max; i++) {
+            list.add(i);
+        }
+        return list;
+    }
+
+
     /**
      * Tests the "size" method with an empty list and a list with one element.
      *
-     * @see PhonyList#size()
      * @type Functional
      * @input list=[], o=1
      * @oracle Must returns 0 then 1.
      * @passed Yes
+     * @see PhonyList#size()
      */
-	@Test
+    @Test
     public void testSize() {
         PhonyList<Integer> list = new PhonyList<>();
         assertEquals(list.size(), 0);
@@ -27,14 +38,14 @@ public class TestPhonyList {
     /**
      * Tests the "isEmpty" method with an empty list and a list with one element
      *
-     * @see PhonyList#isEmpty()
      * @type Functional
      * @input list = []
      * @oracle Must returns true then false
      * @passed Yes
+     * @see PhonyList#isEmpty()
      */
     @Test
-    public void testIsEmpty () {
+    public void testIsEmpty() {
         PhonyList<Integer> list = new PhonyList<>();
         assertTrue(list.isEmpty());
         list.add(1);
@@ -44,7 +55,6 @@ public class TestPhonyList {
     /**
      * Tests the "contains" method with an integer value.
      *
-     * @see PhonyList#contains(Object)
      * @type Functional
      * @input list=[], o=1
      * @oracle Must returns false then true.
@@ -54,6 +64,7 @@ public class TestPhonyList {
      * - return indexOf(o) > 0;
      * + return indexOf(o) >= 0;
      * </pre>
+     * @see PhonyList#contains(Object)
      */
     @Test
     public void testContains_int() {
@@ -66,11 +77,11 @@ public class TestPhonyList {
     /**
      * Tests the "contains" method with a string value.
      *
-     * @see PhonyList#contains(Object)
      * @type Functional
      * @input list=[], o="1"
      * @oracle Must returns false then true.
      * @passed Yes
+     * @see PhonyList#contains(Object)
      */
     @Test
     public void testContains_string() {
@@ -83,30 +94,30 @@ public class TestPhonyList {
     /**
      * Tests the "get" method with an empty list and an out of bounds index
      *
-     * @see PhonyList#get(int)
      * @type Functional
      * @input list = [], i = 0
      * @oracle Must throws IndexOutOfBoundsException
      * @passed Yes
+     * @see PhonyList#get(int)
      */
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void testGet_emptyList () {
-        PhonyList<Integer> list = new PhonyList<Integer>();
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGet_emptyList() {
+        PhonyList<Integer> list = new PhonyList<>();
         list.get(0);
     }
 
     /**
      * Tests the "get" method with a filled list and an index which is not out of bounds
      *
-     * @see PhonyList#get(int)
      * @type Functional
      * @input list = ["elem 1", "elem 2", "elem 3"], i1 = 0, i2 = 1, i3 = 2
      * @oracle Must returns "elem 1" then "elem 2" then "elem 3"
      * @passed Yes
+     * @see PhonyList#get(int)
      */
     @Test
-    public void testGet_filledList () {
-        PhonyList<String> list = new PhonyList<String>();
+    public void testGet_filledList() {
+        PhonyList<String> list = new PhonyList<>();
         list.add("elem 1");
         list.add("elem 2");
         list.add("elem 3");
@@ -118,19 +129,72 @@ public class TestPhonyList {
     /**
      * Tests the "get" method with a filled list and an out of bounds index
      *
-     * @see PhonyList#get(int)
      * @type Functional
      * @input list = ["elem 1", "elem 2", "elem 3"], i = 3
      * @oracle Must throws IndexOutOfBoundsException
      * @passed Yes
+     * @see PhonyList#get(int)
      */
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void testGet_filledList_outOfB () {
-        PhonyList<String> list = new PhonyList<String>();
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGet_filledList_outOfB() {
+        PhonyList<String> list = new PhonyList<>();
         list.add("elem 1");
         list.add("elem 2");
         list.add("elem 3");
         list.get(3);
     }
 
+    /**
+     * Tests the "set" method with integer values
+     *
+     * @type Functional
+     * @input list = [0,1,2,...,nbElem-1], i = [O,1,2,...,nbElem-1]
+     * @oracle The index of "nbElem-i" element must be "i".
+     * @passed No
+     * @correction <pre>
+     * l.227
+     * - elementData[++index] = element;
+     * + elementData[index++] = element;
+     * </pre>
+     * @see PhonyList#set(int, Object)
+     */
+    @Test
+    public void testSet() {
+        int nbElem = 100;
+        PhonyList<Integer> list = list(nbElem);
+        for(int i = 0; i < nbElem; i++){
+            list.set(i, nbElem - i);
+            assertEquals(list.indexOf(nbElem-i),i); // indexOf return the index of the first occurrence
+        }
+    }
+
+    /**
+     * Tests the "set" method with negative index
+     *
+     * @type Functional
+     * @input list = [0,1,2,3,4,5,6,7,8,9], i = -1
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#set(int, Object)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSet_negative() {
+        PhonyList<Integer> list = list(10);
+        list.set(-1,0);
+    }
+
+    /**
+     * Tests the "set" method with index higher than size of list
+     *
+     * @type Functional
+     * @input list = [0,1,2,3,4,5,6,7,8,9], i = 10
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#set(int, Object)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSet_higher() {
+        PhonyList<Integer> list = list(10);
+        list.set(10,0);
+    }
 }
