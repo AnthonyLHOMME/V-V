@@ -197,4 +197,62 @@ public class TestPhonyList {
         PhonyList<Integer> list = list(10);
         list.set(10,0);
     }
+
+    /**
+     * Tests the "add" method with integer values
+     *
+     * @type Functional
+     * @input list = [], o = [0,1,2,3,4,5,6,7,8,9]
+     * @oracle The obtained list must be [0,1,2,3,4,5,6,7,8,9].
+     * @passed Yes
+     * @see PhonyList#add(Object)
+     */
+    @Test
+    public void testAdd_int() {
+        PhonyList<Integer> list = new PhonyList<>();
+        for(int i = 0; i < 10; i++) {
+            list.add(i);
+            assertEquals(list.size(),i+1);
+        }
+        for(int i = 0; i < 10; i++) {
+            assertEquals(list.indexOf(i), i);
+        }
+    }
+
+    /**
+     * Tests the "add" method with string values
+     *
+     * @type Functional
+     * @input list = [], o = [0,1,2,3,4,5,6,7,8,9]
+     * @oracle The obtained list must be ["elem 0","elem 1",...,"elem 9"].
+     * @passed Yes
+     * @see PhonyList#add(Object)
+     */
+    @Test
+    public void testAdd_string() {
+        PhonyList<String> list = new PhonyList<>();
+        for(int i = 0; i < 10; i++) {
+            list.add("elem "+i);
+            assertEquals(list.size(),i+1);
+        }
+        for(int i = 0; i < 10; i++) {
+            assertEquals(list.indexOf("elem "+i), i);
+        }
+    }
+
+    /**
+     * Tests the "add" method with an null value
+     *
+     * @type Functional
+     * @input list = [], o = null
+     * @oracle The obtained list must be ["elem 0","elem 1",...,"elem 9"].
+     * @passed Yes
+     * @see PhonyList#add(Object)
+     */
+    @Test
+    public void testAdd_null() {
+        PhonyList<Object> list = new PhonyList<>();
+        list.add(null);
+        assertEquals(list.indexOf(null), 0);
+    }
 }
