@@ -1,5 +1,6 @@
 package system;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -254,5 +255,79 @@ public class TestPhonyList {
         PhonyList<Object> list = new PhonyList<>();
         list.add(null);
         assertEquals(list.indexOf(null), 0);
+    }
+
+    /**
+     * Tests the "remove" method
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], o = [4,-1,2,7,5]
+     * @oracle The obtained list must be [8,5].
+     * @passed Yes
+     * @see PhonyList#remove(Object)
+     */
+    @Test
+    public void testRemove() {
+        int nbElem = 7;
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        assertEquals(list.size(), nbElem);
+
+        // Suppression d'un element
+        assertTrue(list.contains(4));
+        list.remove(new Integer(4));
+        assertFalse(list.contains(4));
+
+        assertEquals(list.size(),--nbElem);
+
+        // Suppression d'un element negatif
+        assertTrue(list.contains(-1));
+        list.remove(new Integer(-1));
+        assertFalse(list.contains(-1));
+
+        assertEquals(list.size(),--nbElem);
+
+        // Suppression du premier element
+        assertTrue(list.contains(2));
+        list.remove(new Integer(2));
+        assertFalse(list.contains(2));
+
+        assertEquals(list.size(), --nbElem);
+
+        // Suppression du dernier element
+        assertTrue(list.contains(7));
+        list.remove(new Integer(7));
+        assertFalse(list.contains(7));
+
+        assertEquals(list.size(),--nbElem);
+
+        // Suppression d'un element en doublon
+        assertTrue(list.contains(5));
+        list.remove(new Integer(5));
+        assertTrue(list.contains(5));
+
+        assertEquals(list.size(),--nbElem);
+    }
+
+    /**
+     * Tests the "remove" method with an element which does not exist
+     *
+     * @type Functional
+     * @input list = [], o = 1
+     * @oracle It must return false.
+     * @passed Yes
+     * @see PhonyList#remove(Object)
+     */
+    @Test
+    public void testRemove_notExist() {
+        PhonyList<Integer> list = new PhonyList<>();
+        Assert.assertFalse(list.remove(new Integer(1)));
     }
 }
