@@ -1,6 +1,5 @@
 package system;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -317,6 +316,35 @@ public class TestPhonyList {
     }
 
     /**
+     * Tests the "remove" method with a null value
+     *
+     * @type Functional
+     * @input list = [null,1], o = null
+     * @oracle The obtained list must be [1].
+     * @passed No
+     * @correction <pre>
+     * l.259
+     * - if (elementData[index] != null) {
+     * + if (elementData[index] == null) {
+     * </pre>
+     * @see PhonyList#remove(Object)
+     */
+    @Test
+    public void testRemove_null() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(1);
+        list.add(null);
+
+        assertEquals(list.size(),2);
+
+        assertTrue(list.contains(null));
+        list.remove(null);
+        assertFalse(list.contains(null));
+
+        assertEquals(list.size(),1);
+    }
+    
+    /**
      * Tests the "remove" method with an element which does not exist
      *
      * @type Functional
@@ -328,6 +356,15 @@ public class TestPhonyList {
     @Test
     public void testRemove_notExist() {
         PhonyList<Integer> list = new PhonyList<>();
-        Assert.assertFalse(list.remove(new Integer(1)));
+        list.add(4);
+        list.add(-2);
+
+        assertEquals(list.size(),2);
+        assertFalse(list.remove(new Integer(1)));
+        assertEquals(list.size(),2);
+        assertFalse(list.remove(null));
+        assertEquals(list.size(),2);
     }
+
+
 }
