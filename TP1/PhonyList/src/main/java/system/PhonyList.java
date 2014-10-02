@@ -321,10 +321,10 @@ public class PhonyList<E> extends AbstractList<E> implements List<E> {
         if (numMoved > 0)
             System.arraycopy(elementData, index, elementData, index + numNew,
                     numMoved);
-        else if (numMoved > size) {
-            System.arraycopy(elementData, index, elementData, index + numNew,
-                    numMoved);
-        }
+//        else if (numMoved > size) {
+//            System.arraycopy(elementData, index, elementData, index + numNew,
+//                    numMoved);
+//        }
 
         System.arraycopy(a, 0, elementData, index, numNew);
         size += numNew;

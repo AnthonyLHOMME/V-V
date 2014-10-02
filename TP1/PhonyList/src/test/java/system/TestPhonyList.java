@@ -2,6 +2,9 @@ package system;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.Assert.*;
 
 public class TestPhonyList {
@@ -335,7 +338,7 @@ public class TestPhonyList {
         list.add(1);
         list.add(null);
 
-        assertEquals(list.size(),2);
+        assertEquals(list.size(), 2);
 
         assertTrue(list.contains(null));
         list.remove(null);
@@ -343,7 +346,7 @@ public class TestPhonyList {
 
         assertEquals(list.size(),1);
     }
-    
+
     /**
      * Tests the "remove" method with an element which does not exist
      *
@@ -366,5 +369,165 @@ public class TestPhonyList {
         assertEquals(list.size(),2);
     }
 
+    /**
+     * Tests the "addAll" method with an empty list
+     *
+     * @type Functional
+     * @input list = [], o = [4,-5,8,2]
+     * @oracle The obtained list must be [4,-5,8,2].
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test
+    public void testAddAll_emptyList() {
+        PhonyList<Integer> list = new PhonyList<>();
+        Collection<Integer> listAdd = new ArrayList<>();
 
+        listAdd.add(4);
+        listAdd.add(-5);
+        listAdd.add(8);
+        listAdd.add(2);
+        list.addAll(0,listAdd);
+
+        assertEquals(list.indexOf(4),0);
+        assertEquals(list.indexOf(-5),1);
+        assertEquals(list.indexOf(8),2);
+        assertEquals(list.indexOf(2),3);
+        assertEquals(list.size(),4);
+    }
+
+    /**
+     * Tests the "addAll" method with a filled list
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = [4,-5,8,2]
+     * @oracle The obtained list must be [7,4,-5,8,2,-1,3].
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test
+    public void testAddAll_filledList() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listAdd = new ArrayList<>();
+        listAdd.add(4);
+        listAdd.add(-5);
+        listAdd.add(8);
+        listAdd.add(2);
+
+        list.addAll(1,listAdd);
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(4),1);
+        assertEquals(list.indexOf(-5),2);
+        assertEquals(list.indexOf(8),3);
+        assertEquals(list.indexOf(2),4);
+        assertEquals(list.indexOf(-1),5);
+        assertEquals(list.indexOf(3),6);
+        assertEquals(list.size(),7);
+    }
+
+    /**
+     * Tests the "addAll" method with a filled list and a collection at the end of the list
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = [4,-5,8,2]
+     * @oracle The obtained list must be [7,-1,3,4,-5,8,2].
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test
+    public void testAddAll_filledList_atEnd() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listAdd = new ArrayList<>();
+        listAdd.add(4);
+        listAdd.add(-5);
+        listAdd.add(8);
+        listAdd.add(2);
+
+        list.addAll(3,listAdd);
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(-1),1);
+        assertEquals(list.indexOf(3),2);
+        assertEquals(list.indexOf(4),3);
+        assertEquals(list.indexOf(-5),4);
+        assertEquals(list.indexOf(8),5);
+        assertEquals(list.indexOf(2),6);
+        assertEquals(list.size(),7);
+    }
+
+    /**
+     * Tests the "addAll" method with a filled list and empty list
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = []
+     * @oracle The obtained list must be [].
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test
+    public void testAddAll_notChange() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listAdd = new ArrayList<>();
+
+        assertFalse(list.addAll(0,listAdd));
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(-1),1);
+        assertEquals(list.indexOf(3),2);
+        assertEquals(list.size(),3);
+    }
+
+    /**
+     * Tests the "addAll" method with an index out of bounds
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = 4
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testAddAll_outOfBounds() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listAdd = new ArrayList<>();
+        listAdd.add(4);
+
+        list.addAll(4,listAdd);
+    }
+
+    /**
+     * Tests the "addAll" method with a null collection
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = null
+     * @oracle Must throws NullPointerException
+     * @passed Yes
+     * @see PhonyList#addAll(int, java.util.Collection)
+     */
+    @Test(expected = NullPointerException.class)
+    public void testAddAll_nullPointer() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        list.addAll(0,null);
+    }
 }
