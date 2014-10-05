@@ -530,7 +530,7 @@ public class TestPhonyList {
 
         list.addAll(0,null);
     }
-    
+
     /**
      * Tests the "removeAll" method with a collection of integer values
      *
@@ -744,4 +744,220 @@ public class TestPhonyList {
 
         list.removeAll(null);
     }
+
+    /**
+     * Tests the "removeRange" method
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], fromIndex = 0, toIndex = 7
+     * @oracle The obtained list must be [].
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test
+    public void testRemoveRange_all() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        assertEquals(list.size(),7);
+        list.removeRange(0,7);
+        assertEquals(list.size(),0);
+    }
+
+    /**
+     * Tests the "removeRange" method
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], fromIndex = 0, toIndex = 3
+     * @oracle The obtained list must be [4,-1,8,5,7].
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test
+    public void testRemoveRange_atBegin() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        assertEquals(list.size(),7);
+        list.removeRange(0,3);
+        assertEquals(list.size(),4);
+
+        assertEquals(list.indexOf(-1),0);
+        assertEquals(list.indexOf(8),1);
+        assertEquals(list.indexOf(5),2);
+        assertEquals(list.indexOf(7),3);
+    }
+    /**
+     * Tests the "removeRange" method
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], fromIndex = 3, toIndex = 6
+     * @oracle The obtained list must be [2,5,4,7].
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test
+    public void testRemoveRange_atMiddle() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        assertEquals(list.size(),7);
+        list.removeRange(3,6);
+        assertEquals(list.size(),4);
+
+        assertEquals(list.indexOf(2),0);
+        assertEquals(list.indexOf(5),1);
+        assertEquals(list.indexOf(4),2);
+        assertEquals(list.indexOf(7),3);
+    }
+    /**
+     * Tests the "removeRange" method
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], fromIndex = 5, toIndex = 7
+     * @oracle The obtained list must be [2,5,4,-1,8].
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test
+    public void testRemoveRange_atEnd() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        assertEquals(list.size(),7);
+        list.removeRange(5,7);
+        assertEquals(list.size(),5);
+
+        assertEquals(list.indexOf(2),0);
+        assertEquals(list.indexOf(5),1);
+        assertEquals(list.indexOf(4),2);
+        assertEquals(list.indexOf(-1),3);
+        assertEquals(list.indexOf(8),4);
+    }
+
+
+    /**
+     * Tests the "removeRange" method with no effect
+     *
+     * @type Functional
+     * @input list = [2,5,4], fromIndex = 1, toIndex = 1
+     * @oracle The obtained list must be [2,5,4].
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test
+    public void testRemoveRange_noEffect() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+
+        assertEquals(list.size(),3);
+        list.removeRange(1,1);
+        assertEquals(list.size(),3);
+
+        assertEquals(list.indexOf(2),0);
+        assertEquals(list.indexOf(5),1);
+        assertEquals(list.indexOf(4),2);
+    }
+
+    /**
+     * Tests the "removeRange" method with from index out of bounds
+     *
+     * @type Functional
+     * @input list = [7,-1,3], fromIndex = -1, toIndex = 1
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveRange_fromIndexLower_outOfBounds() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        list.removeRange(-1,1);
+    }
+
+    /**
+     * Tests the "removeRange" method with from index out of bounds
+     *
+     * @type Functional
+     * @input list = [7,-1,3], fromIndex = 3, toIndex = 4
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveRange_fromIndexHigher_outOfBounds() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        list.removeRange(3,4);
+    }
+
+    /**
+     * Tests the "removeRange" method with to index out of bounds
+     *
+     * @type Functional
+     * @input list = [7,-1,3], fromIndex = 0, toIndex = 4
+     * @oracle Must throws IndexOutOfBoundsException
+     * @passed Yes
+     * @see PhonyList#removeRange(int, int)
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveRange_toIndexHigher_outOfBounds() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        list.removeRange(0,4);
+    }
+
+//    /**
+//     * Tests the "removeRange" method with index out of bounds
+//     *
+//     * @type Functional
+//     * @input list = [7,-1,3], fromIndex = 2, toIndex = 0
+//     * @oracle Must throws IndexOutOfBoundsException
+//     * @passed No
+//     * @see PhonyList#removeRange(int, int)
+//     */
+//    @Test(expected = IndexOutOfBoundsException.class)
+//    public void testRemoveRange_outOfBounds() {
+//        PhonyList<Integer> list = new PhonyList<>();
+//        list.add(7);
+//        list.add(-1);
+//        list.add(3);
+//
+//        list.removeRange(2,0);
+//    }
 }
