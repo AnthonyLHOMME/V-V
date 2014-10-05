@@ -530,6 +530,41 @@ public class TestPhonyList {
 
         list.addAll(0,null);
     }
+    
+    /**
+     * Tests the "removeAll" method with a collection of integer values
+     *
+     * @type Functional
+     * @input list = [2,5,4,-1,8,5,7], o = [8,-1,5]
+     * @oracle The obtained list must be [2,4,7].
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll() {
+        int nbElem = 7;
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(2);
+        list.add(5);
+        list.add(4);
+        list.add(-1);
+        list.add(8);
+        list.add(5);
+        list.add(7);
+
+        Collection<Integer> listRemove = new ArrayList<>();
+        listRemove.add(8);
+        listRemove.add(-1);
+        listRemove.add(5); // suppression d'un doublon
+
+        assertEquals(list.size(),nbElem);
+        list.removeAll(listRemove);
+        assertEquals(list.size(),nbElem-4);
+
+        assertEquals(list.indexOf(2),0);
+        assertEquals(list.indexOf(4),1);
+        assertEquals(list.indexOf(7),2);
+    }
 
     /**
      * Tests the "removeAll" method with an empty list
@@ -662,4 +697,51 @@ public class TestPhonyList {
         assertEquals(list.size(),2);
     }
 
+    /**
+     * Tests the "removeAll" method with a collection not contained in the list
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = [4,8]
+     * @oracle The obtained list must be [7,-1,3].
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll_notExist() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listRemove = new ArrayList<>();
+        listRemove.add(4);
+        listRemove.add(8);
+
+        assertEquals(list.size(),3);
+        list.removeAll(listRemove);
+        assertEquals(list.size(),3);
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(-1),1);
+        assertEquals(list.indexOf(3),2);
+    }
+
+    /**
+     * Tests the "removeAll" method with a null collection
+     *
+     * @type Functional
+     * @input list = [7,-1,3], o = null
+     * @oracle Must throws NullPointerException
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test(expected = NullPointerException.class)
+    public void testRemoveAll_nullPointer() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+
+        list.removeAll(null);
+    }
 }
