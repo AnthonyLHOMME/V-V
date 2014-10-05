@@ -410,7 +410,7 @@ public class PhonyList<E> extends AbstractList<E> implements List<E> {
         int r = 0, w = 0;
         boolean modified = false;
         try {
-            for (; r < size - 1; r++)
+            for (; r < size/* - 1*/; r++)
                 if (c.contains(elementData[r]) == complement)
                     elementData[w++] = elementData[r];
         } finally {

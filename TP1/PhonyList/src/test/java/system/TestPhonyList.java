@@ -530,4 +530,136 @@ public class TestPhonyList {
 
         list.addAll(0,null);
     }
+
+    /**
+     * Tests the "removeAll" method with an empty list
+     *
+     * @type Functional
+     * @input list = [4,-5, 8, 2], o = []
+     * @oracle The obtained list must be [4,-5,8,2].
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll_emptyList() {
+        PhonyList<Integer> list = new PhonyList<>();
+        Collection<Integer> listRemove = new ArrayList<>();
+
+        list.add(4);
+        list.add(-5);
+        list.add(8);
+        list.add(2);
+        list.removeAll(listRemove);
+
+        assertEquals(list.indexOf(4),0);
+        assertEquals(list.indexOf(-5),1);
+        assertEquals(list.indexOf(8),2);
+        assertEquals(list.indexOf(2),3);
+        assertEquals(list.size(),4);
+    }
+
+    /**
+     * Tests the "removeAll" method with a filled list
+     *
+     * @type Functional
+     * @input list = [7,4,-5,8,2,-1,3], o = [4,-5,8,2]
+     * @oracle The obtained list must be [7,-1,3].
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll_filledList() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(4);
+        list.add(-5);
+        list.add(8);
+        list.add(2);
+        list.add(-1);
+        list.add(3);
+
+        Collection<Integer> listRemove = new ArrayList<>();
+        listRemove.add(4);
+        listRemove.add(-5);
+        listRemove.add(8);
+        listRemove.add(2);
+
+        list.removeAll(listRemove);
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(-1),1);
+        assertEquals(list.indexOf(3),2);
+        assertEquals(list.size(),3);
+    }
+
+    /**
+     * Tests the "removeAll" method with a filled list and a collection at the end of the list
+     *
+     * @type Functional
+     * @input list = [7,-1,3,4,-5,8,2], o = [4,-5,8,2]
+     * @oracle The obtained list must be [7,-1,3].
+     * @passed No
+     * @correction <pre>
+     * l.413
+     * - for (; r < size - 1; r++) {
+     * + for (; r < size; r++) {
+     * </pre>
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll_filledList_atEnd() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(7);
+        list.add(-1);
+        list.add(3);
+        list.add(4);
+        list.add(-5);
+        list.add(8);
+        list.add(2);
+
+        Collection<Integer> listRemove = new ArrayList<>();
+        listRemove.add(4);
+        listRemove.add(-5);
+        listRemove.add(8);
+        listRemove.add(2);
+
+        list.removeAll(listRemove);
+
+        assertEquals(list.indexOf(7),0);
+        assertEquals(list.indexOf(-1),1);
+        assertEquals(list.indexOf(3),2);
+        assertEquals(list.size(),3);
+    }
+
+    /**
+     * Tests the "removeAll" method with a filled list and a collection which contains
+     * elements which are not in the list
+     *
+     * @type Functional
+     * @input list = [1, 2, 3, 4], o = [2, 7, 3, 8]
+     * @oracle The obtained list must be [1, 4].
+     * @passed Yes
+     * @see PhonyList#removeAll(java.util.Collection)
+     */
+    @Test
+    public void testRemoveAll_filledListWithOtherElems() {
+        PhonyList<Integer> list = new PhonyList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+
+        Collection<Integer> listRemove = new ArrayList<>();
+        listRemove.add(2);
+        listRemove.add(7);
+        listRemove.add(3);
+        listRemove.add(8);
+
+        list.removeAll(listRemove);
+
+        assertEquals(list.indexOf(1),0);
+        assertEquals(list.indexOf(4),1);
+        assertEquals(list.size(),2);
+    }
+
 }
