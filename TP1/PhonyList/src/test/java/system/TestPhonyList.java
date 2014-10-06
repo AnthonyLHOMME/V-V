@@ -7,6 +7,9 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Anthony LHOMME & Robin Hacault
+ */
 public class TestPhonyList {
 
     /*
