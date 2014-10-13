@@ -7,4 +7,3 @@ bin/
 .ruleset
 .settings/
 *.patch
-.idea
