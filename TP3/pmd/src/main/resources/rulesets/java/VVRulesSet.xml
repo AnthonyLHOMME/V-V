@@ -22,4 +22,45 @@
             ]]>
         </example>
     </rule>
+
+
+    <rule name="ForLoopsNotImbrecated"
+          message="Avoid using 'for' statements in an other 'for' statement"
+          language="java"
+          class="vv.tp3.ForLoopsNotImbrecated">
+        <description>
+            Avoid using 'for' statements in an other 'for' statement
+        </description>
+        <priority>3</priority>
+
+        <example>
+            <![CDATA[
+                public void doSomething() {
+                    for(int i = 0; i < 10; i++) {
+                        for(int j = 0; j < 10; j++) {
+                            foo();
+                        }
+                    }
+                }
+            ]]>
+        </example>
+    </rule>
+
+    <rule name="WhileLoopsNotTrueFalse"
+          message="Avoid using 'while' statements with a literal boolean condition"
+          language="java"
+          class="vv.tp3.WhileLoopsNotTrueFalse">
+        <description>
+            Avoid using 'while' statements with a literal boolean condition
+        </description>
+        <priority>3</priority>
+
+        <example>
+            <![CDATA[
+                public void doSomething() {
+                    while (true) {}
+                }
+            ]]>
+        </example>
+    </rule>
 </ruleset>
