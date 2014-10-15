@@ -37,13 +37,26 @@ public class SimpleMap<K,V> implements Map<K,V> {
     @Override
     public V get(Object key) {
         int index = keys.indexOf(key);
-        return values.get(index);
+
+        if (index != -1) {
+            return values.get(index);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public V put(K key, V value) {
-        keys.add(key);
-        values.add(value);
+        int index = keys.indexOf(key);
+
+        if (index == -1) {
+            // key not exist
+            keys.add(key);
+            values.add(value);
+        } else {
+            // key already exist
+            values.set(index, value);
+        }
         return value;
     }
 
@@ -84,5 +97,22 @@ public class SimpleMap<K,V> implements Map<K,V> {
     @Override
     public Set<Entry<K, V>> entrySet() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equals = false;
+
+        if (o instanceof Map) {
+            Map<K, V> map = (Map<K, V>) o;
+            equals = map.keySet().equals(keySet()) && map.values().equals(values());
+        }
+
+        return equals;
+    }
+
+    @Override
+    public int hashCode() {
+        return keySet().hashCode();
     }
 }
