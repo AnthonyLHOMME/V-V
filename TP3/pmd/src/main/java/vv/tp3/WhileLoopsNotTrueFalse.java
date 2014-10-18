@@ -6,7 +6,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * Created by anthony on 13/10/14.
+ * Avoid while loops to be like while(false) {...} or while(true) {...}
  */
 public class WhileLoopsNotTrueFalse extends AbstractJavaRule {
 

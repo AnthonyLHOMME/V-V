@@ -63,4 +63,22 @@
             ]]>
         </example>
     </rule>
+
+    <rule name="WhileLoopsNotTrueFalseBreakReturn"
+          message="Avoid using 'while' statements with a literal boolean condition and with no break or return in the repeated instructions"
+          language="java"
+          class="vv.tp3.WhileLoopsNotTrueFalseBreakReturn">
+        <description>
+            Avoid using 'while' statements with a literal boolean condition and with no break or return in the repeated instructions
+        </description>
+        <priority>3</priority>
+
+        <example>
+            <![CDATA[
+                public void doSomething() {
+                    while (true) {}
+                }
+            ]]>
+        </example>
+    </rule>
 </ruleset>
