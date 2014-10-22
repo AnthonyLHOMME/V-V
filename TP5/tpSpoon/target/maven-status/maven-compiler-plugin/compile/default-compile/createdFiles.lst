@@ -1,0 +1,6 @@
+vv/spoon/logger/ShutdownHookLog.class
+vv/spoon/Instru.class
+vv/spoon/MainExample.class
+vv/spoon/processor/LogProcessor.class
+vv/spoon/logger/LogWriter.class
+vv/spoon/processor/SimpleJavaOutputProcessor.class

@@ -1,0 +1,27 @@
+#surefire
+#Wed Oct 22 11:33:17 CEST 2014
+testClassesDirectory=/home/anthony/M2infoGL/V-V/TP5/tpSpoon/target/test-classes
+classPathUrl.4=/home/anthony/.m2/repository/com/martiansoftware/jsap/2.1/jsap-2.1.jar
+forkMode=once
+classPathUrl.3=/home/anthony/.m2/repository/org/eclipse/jdt/core/compiler/ecj/4.2.2/ecj-4.2.2.jar
+classPathUrl.2=/home/anthony/.m2/repository/fr/inria/gforge/spoon/spoon-core/2.3.1/spoon-core-2.3.1.jar
+useManifestOnlyJar=true
+classPathUrl.1=/home/anthony/M2infoGL/V-V/TP5/tpSpoon/target/classes
+reportsDirectory=/home/anthony/M2infoGL/V-V/TP5/tpSpoon/target/surefire-reports
+classPathUrl.0=/home/anthony/M2infoGL/V-V/TP5/tpSpoon/target/test-classes
+providerConfiguration=org.apache.maven.surefire.junit.JUnit3Provider
+testSuiteDefinitionTestSourceDirectory=/home/anthony/M2infoGL/V-V/TP5/tpSpoon/src/test/java
+surefireClassPathUrl.1=/home/anthony/.m2/repository/org/apache/maven/surefire/surefire-api/2.10/surefire-api-2.10.jar
+surefireClassPathUrl.0=/home/anthony/.m2/repository/org/apache/maven/surefire/surefire-junit3/2.10/surefire-junit3-2.10.jar
+runOrder=filesystem
+useSystemClassLoader=true
+excludes0=**/*$*
+isTrimStackTrace=true
+enableAssertions=true
+includes2=**/*TestCase.java
+failIfNoTests=false
+includes1=**/*Test.java
+includes0=**/Test*.java
+childDelegation=false
+classPathUrl.6=/home/anthony/.m2/repository/commons-io/commons-io/1.3.2/commons-io-1.3.2.jar
+classPathUrl.5=/home/anthony/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar
