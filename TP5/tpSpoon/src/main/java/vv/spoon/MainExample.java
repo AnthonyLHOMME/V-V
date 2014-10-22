@@ -1,6 +1,6 @@
 package vv.spoon;
 
-import vv.spoon.processor.CountMethodCallsProcessor;
+import vv.spoon.processor.TreeMethodProcessor;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import java.io.IOException;
 public class MainExample {
 
     public static void main(String[] args) throws IOException {
-        Instru instru = new Instru(args[0], args[1], new CountMethodCallsProcessor());
+        Instru instru = new Instru(args[0], args[1], new TreeMethodProcessor());
 
         //copy the project (args[0]) in the output directory (args[1])
         instru.initOutputDirectory();

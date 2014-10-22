@@ -9,13 +9,14 @@ public class C  {
     }
 
     public int mth1() {
-if (A.listMethod.containsKey("C.mth1[]")) {
-   int value = A.listMethod.get("C.mth1[]")+1;
-   A.listMethod.put("C.mth1[]",value);
-} else {
-   A.listMethod.put("C.mth1[]", 1);
-}
+		String tab = "";
+		for (int i_ = 0; i_ < A.nbTab; i_++) {
+			tab = tab+" |	";
+		}
+		vv.spoon.logger.LogWriter.out(tab+"C.mth1[]",false);
+		A.nbTab++;
        System.out.println("C.mth1()");
+		A.nbTab--;
         return 100/i;
     }
 }

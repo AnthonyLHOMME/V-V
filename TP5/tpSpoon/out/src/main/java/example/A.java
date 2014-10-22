@@ -1,34 +1,32 @@
 package example;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class A  {
 
-	public static Map<String, Integer> listMethod = new HashMap<String, Integer>();
+	public static int nbTab = 0;
     public static void main(String[] args) {
-if (A.listMethod.containsKey("A.main[java.lang.String[] args]")) {
-   int value = A.listMethod.get("A.main[java.lang.String[] args]")+1;
-   A.listMethod.put("A.main[java.lang.String[] args]",value);
-} else {
-   A.listMethod.put("A.main[java.lang.String[] args]", 1);
-}
+		String tab = "";
+		for (int i_ = 0; i_ < A.nbTab; i_++) {
+			tab = tab+" |	";
+		}
+		vv.spoon.logger.LogWriter.out(tab+"A.main[java.lang.String[] args]",false);
+		A.nbTab++;
 
         System.out.println("A.main(String[] args)");
 
         A a = new A();
         a.mth1(Integer.parseInt(args[0]));
 
-		for (String key: listMethod.keySet()) vv.spoon.logger.LogWriter.out(key+": "+listMethod.get(key),false);
+		A.nbTab--;
     }
 
     public void mth1(int count) {
-if (A.listMethod.containsKey("A.mth1[int count]")) {
-   int value = A.listMethod.get("A.mth1[int count]")+1;
-   A.listMethod.put("A.mth1[int count]",value);
-} else {
-   A.listMethod.put("A.mth1[int count]", 1);
-}
+		String tab = "";
+		for (int i_ = 0; i_ < A.nbTab; i_++) {
+			tab = tab+" |	";
+		}
+		vv.spoon.logger.LogWriter.out(tab+"A.mth1[int count]",false);
+		A.nbTab++;
         System.out.println("A.mth1(int count)");
 
         B b = new B();
@@ -41,6 +39,7 @@ if (A.listMethod.containsKey("A.mth1[int count]")) {
             }
         }
 
+		A.nbTab--;
     }
 
 }
