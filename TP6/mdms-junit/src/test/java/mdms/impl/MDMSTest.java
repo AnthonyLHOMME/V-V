@@ -23,13 +23,25 @@ public class MDMSTest extends AbstractMDMSTest {
   }
 
   @Test
-  public void testMDMS() throws Exception {
-    driver.get(baseUrl + "/");
+  public void testTitle() throws Exception {
+    driver.get(baseUrl);
     try {
       assertEquals("MdMS - Diversify", driver.getTitle());
     } catch (Error e) {
       verificationErrors.append(e.toString());
     }
+  }
+
+  @Test
+  public void testLoginUsername() throws Exception {
+    driver.get(baseUrl);
+    driver.findElement(By.name("login")).clear();
+    driver.findElement(By.name("login")).sendKeys("admin");
+    driver.findElement(By.name("password")).clear();
+    driver.findElement(By.name("password")).sendKeys("admin");
+    driver.findElement(By.cssSelector("button.btn.btn-success")).click();
+    driver.findElement(By.linkText("I do not want to wait")).click();
+    assertTrue(isElementPresent(By.linkText("admin")));
   }
 
   @After
@@ -40,5 +52,14 @@ public class MDMSTest extends AbstractMDMSTest {
       fail(verificationErrorString);
     }
   }
+
+    private boolean isElementPresent(By by) {
+        try {
+            driver.findElement(by);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
 
 }
