@@ -146,6 +146,47 @@ public class MDMSTest extends AbstractMDMSTest {
         assertNotEquals(baseUrl, driver.getCurrentUrl());
     }
 
+
+    /* QUESTION 3.a.4, problème de ElementNotVisibleException en Java (fonctionne via l'IDE Firefox)
+     * Meme soucis pour 3.a.3
+     */
+
+    /* You can write an article - Element is added on the main page after validation */
+    @Test
+    public void testWriteArticleVerifyMainPage() throws Exception {
+        driver.get(baseUrl);
+        driver.findElement(By.name("login")).clear();
+        driver.findElement(By.name("login")).sendKeys("admin");
+        driver.findElement(By.name("password")).clear();
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.cssSelector("button.btn.btn-success")).click();
+        driver.findElement(By.linkText("I do not want to wait")).click();
+        driver.findElement(By.linkText("Add article")).click();
+        driver.findElement(By.id("title")).clear();
+        driver.findElement(By.id("title")).sendKeys("Nouvel Article");
+        // TODO - ElementNotVisibleException: Element is not currently visible and so may not be interacted with
+        driver.findElement(By.cssSelector("div > textarea")).clear();
+        driver.findElement(By.cssSelector("div > textarea")).sendKeys("Here is the new article ;-)");
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        driver.findElement(By.id("save")).click();
+        // TODO - Check if the we're in the main page and if the article is present
+    }
+
+    /* You can erase an article */
+    @Test
+    public void testDeleteArticle() throws Exception {
+        driver.get(baseUrl);
+        driver.findElement(By.name("login")).clear();
+        driver.findElement(By.name("login")).sendKeys("admin");
+        driver.findElement(By.name("password")).clear();
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.cssSelector("button.btn.btn-success")).click();
+        driver.findElement(By.linkText("I do not want to wait")).click();
+        driver.findElement(By.linkText("Delete")).click(); // Select the first (Experimental App)
+        assertEquals("×\nArticle \"article_2\" deleted successfully", driver.findElement(By.xpath("//body/div[2]/div")).getText());
+        assertEquals("Diversify Video\nDelete\nEdit", driver.findElement(By.xpath("//body/div[2]/div[2]/div/h2")).getText());
+    }
+
     @After
     public void tearDown() throws Exception {
         driver.quit();
